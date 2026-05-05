@@ -7,8 +7,12 @@ import { refreshAccessToken } from "../controllers/user.controler.js";
 const router = Router();
 
 router.route('/register').post(
-
-    upload.fields([{name:"avatar",maxCount:1},{name:"coverimage",maxCount:1}]),registerUser);
+  upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 }, // ✅ FIXED
+  ]),
+  registerUser
+);
 
     router.route('/login').get(loginUser);
 
