@@ -250,6 +250,9 @@ const changeCurrentPassword = asyncHandler(async (req,res) => {
    const {oldPassword,newPassword}=req.body
    //------------------------find user--------------
   const user =  await User.findById(req.user?._id)
+   if (!user) {
+      throw new ApiError(404, "User not found")
+   }
 //------------------------check old pass correction--
  const isPasswordCorrect= await user.isPasswordCorrect(oldPassword)
 if (!isPasswordCorrect) {
@@ -264,17 +267,24 @@ await user.save({validateBeforeSave:false})
 return res.status(200).json(new ApiResponse(200,{},"password changed successfully"))
 })
 
-const getCurrentUser= asyncHandler(async (req,res) => {
-   return res.status(200)
-   .json(203,req.user," cuurent user fetched")
+const getCurrentUser = asyncHandler(async (req,res) => {
+
+   return res.status(200).json(
+      new ApiResponse(
+         200,
+         req.user,
+         "current user fetched successfully"
+      )
+   )
+
 })
 // -------------------------------update account details---------------------------------------------------------------------------
 
      const updateAccountDetails= asyncHandler(async (req,res) => {
    //------------------------getdata from frontend----
-   const {email,fullname}=req.body
-   if(!fullname&&!email){
-      throw new ApiError(400,"all fields required")
+   const {email,fullname,username}=req.body
+   if(!fullname&&!email&&!username){
+      throw new ApiError(400,"Some fields required to update ")
    }
  //------------------------ get user from db-----
  const user= await User.findByIdAndUpdate(
@@ -282,7 +292,7 @@ const getCurrentUser= asyncHandler(async (req,res) => {
 
    {
       $set:{
-         fullname,email
+         fullname,email,username
       }
    },
    {new:true}
@@ -292,7 +302,7 @@ return res.status(200)
 .json(new ApiResponse(200,user,"details updated"))
 })
 
-const revupdateCoverImage = asyncHandler(async (req,res) => {
+const updateCoverImage = asyncHandler(async (req,res) => {
 
    const coverimageLocatPath = req.file.coverimage.path
    const coverimage= await uploadOnCloudinary(coverimageLocatPath)
