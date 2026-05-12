@@ -8,7 +8,7 @@ import {
   getCurrentUser,
   updateAccountDetails,
   updateCoverImage,
-  updateUserAvatar,
+  updateUserprofile,
   reqUserProfile,
   getUserChannelProfile,
   forgotPassword,
@@ -21,7 +21,7 @@ const router = Router();
 
 router.route("/register").post(
   upload.fields([
-    { name: "avatar", maxCount: 1 },
+    { name: "profile", maxCount: 1 },
     { name: "coverImage", maxCount: 1 }, // ✅ FIXED
   ]),
   registerUser
@@ -38,19 +38,19 @@ router.route("/update-details").patch(verifyJwt, updateAccountDetails);
 router.route("/update-cover").patch(
   verifyJwt,
   upload.fields([
-    { name: "avatar", maxCount: 1 },
+    { name: "profile", maxCount: 1 },
     { name: "coverImage", maxCount: 1 }, // ✅ FIXED
   ]),
   updateCoverImage
 );
 
-router.route("/update-avatar").patch(
+router.route("/update-profile").patch(
   verifyJwt,
   upload.fields([
-    { name: "avatar", maxCount: 1 },
+    { name: "profile", maxCount: 1 },
     { name: "coverImage", maxCount: 1 }, // ✅ FIXED
   ]),
-  updateUserAvatar
+  updateUserprofile
 );
 
 router.route("/profile/:username").get(verifyJwt, reqUserProfile);

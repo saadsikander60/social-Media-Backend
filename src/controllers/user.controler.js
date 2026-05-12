@@ -45,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User already exists with this email or username");
   }
 
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
+  const profileLocalPath = req.files?.profile?.[0]?.path;
 
   let coverImageLocalPath;
   if (
@@ -56,18 +56,18 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImageLocalPath = req.files.coverImage[0].path;
   }
 
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar image is required");
+  if (!profileLocalPath) {
+    throw new ApiError(400, "profile image is required");
   }
 
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
+  const profile = await uploadOnCloudinary(profileLocalPath);
 
   const coverImage = coverImageLocalPath
     ? await uploadOnCloudinary(coverImageLocalPath)
     : null;
 
-  if (!avatar?.url) {
-    throw new ApiError(500, "Unable to upload avatar image");
+  if (!profile?.url) {
+    throw new ApiError(500, "Unable to upload profile image");
   }
 
   const user = await User.create({
@@ -75,7 +75,7 @@ const registerUser = asyncHandler(async (req, res) => {
     username: username.toLowerCase(),
     email,
     password,
-    avatar: avatar.url,
+    profile: profile.url,
     coverImage: coverImage?.url || "",
   });
 
@@ -287,14 +287,14 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "coverimage updated successfully"));
 });
 
-const updateUserAvatar = asyncHandler(async (req, res) => {
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
-  if (!avatarLocalPath) {
+const updateUserprofile = asyncHandler(async (req, res) => {
+  const profileLocalPath = req.files?.profile?.[0]?.path;
+  if (!profileLocalPath) {
     throw new ApiError(200, "upload again");
   }
 
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  if (!avatar.url) {
+  const profile = await uploadOnCloudinary(profileLocalPath);
+  if (!profile.url) {
     throw new ApiError(500, "cloud upload failed");
   }
 
@@ -302,7 +302,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        avatar: avatar.url,
+        profile: profile.url,
       },
     },
     { new: true }
@@ -310,7 +310,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "avatar updated succesfully"));
+    .json(new ApiResponse(200, user, "profile updated succesfully"));
 });
 
 const reqUserProfile = asyncHandler(async (req, res) => {
@@ -374,7 +374,7 @@ const reqUserProfile = asyncHandler(async (req, res) => {
         subscribersCount: 1,
         channelsSubscribedToCount: 1,
         isSubscribed: 1,
-        avatar: 1,
+        profile: 1,
         coverImage: 1,
         email: 1,
       },
@@ -445,7 +445,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $project: {
         fullname: 1,
         username: 1,
-        avatar: 1,
+        profile: 1,
         channelsubscribedtocount: 1,
         subscriberCount: 1,
         isSubscribed: 1,
@@ -527,7 +527,7 @@ export {
   changeCurrentPassword,
   getCurrentUser,
   updateAccountDetails,
-  updateUserAvatar,
+  updateUserprofile,
   updateCoverImage,
   reqUserProfile,
   getUserChannelProfile,

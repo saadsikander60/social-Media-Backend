@@ -28,7 +28,7 @@ const userSchema = new Schema(
       index: true,
     },
 
-    avatar: {
+    profile: {
       type: String, // cloudinary URL
       default: "",
     },
@@ -43,8 +43,6 @@ const userSchema = new Schema(
       default: "",
       maxlength: 150,
     },
-
-
 
     watchHistory: [
       {
@@ -63,12 +61,12 @@ const userSchema = new Schema(
       type: String,
     },
     resetOtp: {
-   type: String
-},
+      type: String,
+    },
 
-resetOtpExpiry: {
-   type: Date
-},
+    resetOtpExpiry: {
+      type: Date,
+    },
 
     isVerified: {
       type: Boolean,
@@ -78,7 +76,6 @@ resetOtpExpiry: {
   { timestamps: true }
 );
 
-
 // 🔐 HASH PASSWORD
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
@@ -86,12 +83,10 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-
 // 🔑 CHECK PASSWORD
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-
 
 // 🎟 ACCESS TOKEN
 userSchema.methods.generateAccessToken = function () {
@@ -107,7 +102,6 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
-
 // 🔄 REFRESH TOKEN
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
@@ -118,6 +112,5 @@ userSchema.methods.generateRefreshToken = function () {
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
   );
 };
-
 
 export const User = mongoose.model("User", userSchema);
