@@ -518,7 +518,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 export {
-  registerUser,
+  registerUser, //saad
   loginUser,
   logoutUser,
   refreshAccessToken,
