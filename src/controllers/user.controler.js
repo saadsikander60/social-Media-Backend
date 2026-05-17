@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../model/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import sendEmail from "../utils/sendEmail.js";
 import { forgotPasswordTemplate } from "../mails/forgotPasswordTemplate.js";
 import jwt from "jsonwebtoken";
 import { json, response } from "express";
@@ -93,18 +93,16 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res, next) => {
-  const { email, username, password } = req.body;
+  const { email, password } = req.body;
 
   if (!password) {
     throw new ApiError(400, "password is required");
   }
-  if (!email && !username) {
-    throw new ApiError(403, "username/email are required");
+  if (!email) {
+    throw new ApiError(403, "email is required");
   }
 
-  const checkUser = await User.findOne({
-    $or: [{ email }, { username }],
-  });
+  const checkUser = await User.findOne({ email });
   if (!checkUser) {
     throw new ApiError(404, "user not registered");
   }
