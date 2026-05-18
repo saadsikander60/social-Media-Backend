@@ -17,8 +17,10 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 import userRouter from "./routes/user.routes.js";
+import postRouter from "./routes/post.routes.js";
 
 app.use("/api/users", userRouter);
+app.use("/api/v1/posts", postRouter);
 app.use((err, req, res, next) => {
   return res.status(err.statusCode || 500).json({
     success: false,
