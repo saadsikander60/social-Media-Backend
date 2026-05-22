@@ -133,8 +133,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
     .json({
       statusCode: 200,
       user: userLoggedIn,
-      accessToken,
-      refreshToken,
+
       message: "user logged in successfully",
     });
 });
