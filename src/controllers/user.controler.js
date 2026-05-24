@@ -122,8 +122,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   return res
@@ -140,9 +140,11 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
-    req.user_id,
+    req.user?._id,
     {
-      $set: { refreshToken: undefined },
+      $unset: {
+        refreshToken: 1,
+      },
     },
     {
       new: true,
@@ -150,15 +152,16 @@ const logoutUser = asyncHandler(async (req, res) => {
   );
 
   const options = {
-    httpsOnly: true,
-    secure: true,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   return res
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "user logout"));
+    .json(new ApiResponse(200, {}, "user logout successfully"));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -469,20 +472,28 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new ApiError(404, "user not found");
   }
 
+  // GENERATE OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   user.resetOtp = otp;
-  user.resetOtpExpiry = Date.now() + 10 * 60 * 1000; // 10 min
 
-  await user.save({ validateBeforeSave: false });
+  user.resetOtpExpiry = Date.now() + 10 * 60 * 1000;
 
-  await sendEmail(email, "Password Reset OTP", forgotPasswordTemplate(otp));
+  await user.save({
+    validateBeforeSave: false,
+  });
+
+  // SEND EMAIL
+  await sendEmail(
+    email,
+    `RESET-${Math.random()}-${otp}`,
+    forgotPasswordTemplate(otp)
+  );
 
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "otp sent successfully"));
 });
-
 const resetPassword = asyncHandler(async (req, res) => {
   const { email, otp, newPassword } = req.body;
 

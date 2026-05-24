@@ -1,106 +1,145 @@
 export const forgotPasswordTemplate = (otp) => {
   return `
 
-   <div style="
-      margin:0;
-      padding:40px 20px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      font-family: Arial, sans-serif;
-   ">
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Flowin Reset Code</title>
+</head>
 
+<body style="
+  margin:0;
+  padding:0;
+  background:#f4f7fb;
+  font-family:Arial,sans-serif;
+">
+
+  <!-- PREVIEW TEXT -->
+  <div style="
+    display:none;
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+  ">
+    Your Flowin OTP is ${otp}
+  </div>
+
+  <div style="
+    width:100%;
+    padding:30px 15px;
+    box-sizing:border-box;
+  ">
+
+    <div style="
+      max-width:500px;
+      margin:auto;
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid #e5e7eb;
+    ">
+
+      <!-- HEADER -->
       <div style="
-         max-width:500px;
-         margin:auto;
-         background:#ffffff;
-         border-radius:20px;
-         overflow:hidden;
-         box-shadow:0 10px 30px rgba(0,0,0,0.2);
+        background:linear-gradient(135deg,#2563eb,#7c3aed);
+        padding:35px 20px;
+        text-align:center;
+      ">
+        <h1 style="
+          margin:0;
+          color:white;
+          font-size:32px;
+          font-weight:bold;
+        ">
+          Flowin
+        </h1>
+
+        <p style="
+          margin-top:10px;
+          color:rgba(255,255,255,0.85);
+          font-size:14px;
+        ">
+          Keep Flowing...
+        </p>
+      </div>
+
+      <!-- BODY -->
+      <div style="
+        padding:40px 25px;
+        text-align:center;
       ">
 
-         <div style="
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            padding:30px;
-            text-align:center;
-            color:white;
-         ">
-            <h1 style="
-               margin:0;
-               font-size:32px;
-            ">
-               🔐 Password Reset
-            </h1>
+        <h2 style="
+          margin-top:0;
+          color:#111827;
+          font-size:24px;
+        ">
+          Reset Your Password
+        </h2>
 
-            <p style="
-               margin-top:10px;
-               opacity:0.9;
-               font-size:15px;
-            ">
-               Secure OTP Verification
-            </p>
-         </div>
+        <p style="
+          color:#6b7280;
+          font-size:15px;
+          line-height:1.7;
+          margin-bottom:30px;
+        ">
+          Use the verification code below to reset your password.
+          This OTP will expire in 10 minutes.
+        </p>
 
-         <div style="
-            padding:40px 30px;
-            text-align:center;
-         ">
+        <!-- OTP BOX -->
+        <div style="
+          background:#111827;
+          color:white;
+          display:inline-block;
+          padding:16px 20px;
+          border-radius:12px;
+          font-size:26px;
+          font-weight:bold;
+          letter-spacing:3px;
+          line-height:1.4;
+          text-align:center;
+          max-width:100%;
+          box-sizing:border-box;
+          word-break:break-word;
+        ">
+          ${otp}
+        </div>
+        <p style="font-size:20px;">
+  ${otp}
+</p>
 
-            <h2 style="
-               color:#333;
-               margin-bottom:15px;
-            ">
-               Hello 👋
-            </h2>
-
-            <p style="
-               color:#666;
-               font-size:16px;
-               line-height:1.6;
-            ">
-               Use the OTP below to reset your password.
-               This OTP is valid for only
-               <b>10 minutes</b>.
-            </p>
-
-            <div style="
-               margin:35px auto;
-               background: linear-gradient(135deg, #ff512f, #dd2476);
-               color:white;
-               font-size:38px;
-               font-weight:bold;
-               letter-spacing:10px;
-               padding:18px;
-               border-radius:14px;
-               width:fit-content;
-               min-width:250px;
-               box-shadow:0 6px 20px rgba(221,36,118,0.3);
-            ">
-               ${otp}
-            </div>
-
-            <p style="
-               color:#888;
-               font-size:14px;
-               margin-top:25px;
-            ">
-               If you did not request this email,
-               you can safely ignore it.
-            </p>
-
-         </div>
-
-         <div style="
-            background:#f5f5f5;
-            padding:18px;
-            text-align:center;
-            color:#777;
-            font-size:12px;
-         ">
-            © 2026 IntrenProject • Secure Authentication System
-         </div>
+        <p style="
+          color:#9ca3af;
+          font-size:13px;
+          line-height:1.6;
+          margin-top:30px;
+        ">
+          If you did not request a password reset,
+          you can safely ignore this email.
+        </p>
 
       </div>
 
-   </div>
+      <!-- FOOTER -->
+      <div style="
+        background:#f9fafb;
+        padding:18px;
+        text-align:center;
+        color:#9ca3af;
+        font-size:12px;
+        border-top:1px solid #e5e7eb;
+      ">
+        Flow Through Memories
+      </div>
 
-   `;
+    </div>
+
+  </div>
+
+</body>
+</html>
+
+  `;
 };
