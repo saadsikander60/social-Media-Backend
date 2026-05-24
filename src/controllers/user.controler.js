@@ -472,8 +472,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new ApiError(404, "user not found");
   }
 
-  // GENERATE OTP
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  // 5 DIGIT OTP
+  const otp = Math.floor(10000 + Math.random() * 90000).toString();
+  console.log("NEW TEMPLATE RUNNING");
+  console.log("OTP:", otp);
 
   user.resetOtp = otp;
 
@@ -483,12 +485,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     validateBeforeSave: false,
   });
 
-  // SEND EMAIL
-  await sendEmail(
-    email,
-    `RESET-${Math.random()}-${otp}`,
-    forgotPasswordTemplate(otp)
-  );
+  await sendEmail(email, `Flowin OTP ${otp}`, forgotPasswordTemplate(otp));
 
   return res
     .status(200)
