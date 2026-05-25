@@ -13,6 +13,7 @@ import {
   getUserChannelProfile,
   forgotPassword,
   resetPassword,
+  searchUsers,
 } from "../controllers/user.controler.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
@@ -61,5 +62,6 @@ router.route("/channel/:username").get(verifyJwt, getUserChannelProfile);
 router.route("/forgot-password").post(forgotPassword);
 
 router.route("/reset-password").post(resetPassword);
+router.route("/search").get(verifyJwt, searchUsers);
 
 export default router;

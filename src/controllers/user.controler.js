@@ -5,6 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import sendEmail from "../utils/sendEmail.js";
 import { forgotPasswordTemplate } from "../mails/forgotPasswordTemplate.js";
+import { Post } from "../model/post.model.js";
 import jwt from "jsonwebtoken";
 import { json, response } from "express";
 
@@ -524,6 +525,132 @@ const resetPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "password reset successfully"));
 });
 
+const searchUsers = async (req, res) => {
+  try {
+    const query = req.query.q?.trim() || "";
+
+    const page = Number(req.query.page) || 1;
+
+    const limit = Number(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    // EMPTY QUERY
+    if (!query) {
+      return res.status(200).json({
+        users: [],
+        posts: [],
+        pagination: {
+          page,
+          limit,
+          hasMore: false,
+        },
+      });
+    }
+
+    // ================= USERS SEARCH =================
+
+    const users = await User.find({
+      $or: [
+        {
+          username: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          fullname: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+      ],
+    })
+      .select("fullname username profile")
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 });
+
+    // ================= POSTS SEARCH =================
+
+    const posts = await Post.find({
+      $or: [
+        {
+          caption: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+      ],
+    })
+      .populate("owner", "fullname username profile")
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
+
+    // ================= TOTAL COUNTS =================
+
+    const totalUsers = await User.countDocuments({
+      $or: [
+        {
+          username: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          fullname: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+      ],
+    });
+
+    const totalPosts = await Post.countDocuments({
+      caption: {
+        $regex: query,
+        $options: "i",
+      },
+    });
+
+    const totalResults = totalUsers + totalPosts;
+
+    // ================= RESPONSE =================
+
+    return res.status(200).json({
+      success: true,
+
+      query,
+
+      users,
+
+      posts,
+
+      pagination: {
+        page,
+
+        limit,
+
+        totalUsers,
+
+        totalPosts,
+
+        totalResults,
+
+        hasMore: skip + users.length + posts.length < totalResults,
+      },
+    });
+  } catch (error) {
+    console.log("SEARCH ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Search failed",
+    });
+  }
+};
+
 export {
   registerUser, //saad
   loginUser,
@@ -538,4 +665,5 @@ export {
   getUserChannelProfile,
   forgotPassword,
   resetPassword,
+  searchUsers,
 };

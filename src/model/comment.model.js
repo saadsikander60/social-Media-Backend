@@ -6,6 +6,13 @@ const commentSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+      maxlength: 500,
+    },
+
+    post: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+      required: true,
     },
 
     owner: {
@@ -13,26 +20,10 @@ const commentSchema = new Schema(
       ref: "User",
       required: true,
     },
-
-    post: {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
-
-    video: {
-      type: Schema.Types.ObjectId,
-      ref: "Video",
-    },
-
-    parentComment: {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
-      default: null,
-    },
-
-   
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 export const Comment = mongoose.model("Comment", commentSchema);
